@@ -65,15 +65,18 @@ BookFile *bookfile_load(const char *filename) {
 
 int bookfile_save(BookFile *bookfile, const char *filename) {
   FILE *file = fopen(filename, "w");
-  if (!file) {
-    return -1;
-  }
+  if (!file) return -1;
+  int save_ok = 0;
   for (size_t i = 0; i < bookfile->size; i++) {
-    Book book = bookfile->bookArray[i];
-    fprintf(file, "%s,%s,%s,%d\n", book.code, book.name, book.type, book.price);
+    Book *book = &bookfile->bookArray[i];
+    if (fprintf(file, "%s,%s,%s,%d\n", book->code, book->name, book->type,
+                book->price) < 0) {
+      save_ok = -1;
+      break;
+    }
   }
-  fclose(file);
-  return 0;
+  if (fclose(file) != 0) save_ok = -1;
+  return save_ok;
 }
 
 int bookfile_push(BookFile *bookfile, const Book book) {
@@ -91,9 +94,7 @@ int bookfile_push(BookFile *bookfile, const Book book) {
 }
 
 int bookfile_free(BookFile *bookfile) {
-  if (!bookfile) {
-    return -1;
-  }
+  if (!bookfile) return 0;
   for (size_t i = 0; i < bookfile->size; i++) {
     free(bookfile->bookArray[i].code);
     free(bookfile->bookArray[i].name);
