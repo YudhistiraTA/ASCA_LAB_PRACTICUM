@@ -2,6 +2,7 @@
  * Interface for managing book files.
  * Disk read are only done on load and save.
  * All other operations are done in memory through the BookFile struct.
+ * Functions with int return type return 0 on success and -1 on failure.
  */
 #ifndef FILE_INTERFACE_H
 #define FILE_INTERFACE_H
