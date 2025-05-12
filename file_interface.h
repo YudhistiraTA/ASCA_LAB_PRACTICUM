@@ -6,7 +6,13 @@
  */
 #ifndef FILE_INTERFACE_H
 #define FILE_INTERFACE_H
+#include <stdio.h>
 #include <stdlib.h>
+
+typedef enum RecordType {
+  ITEM,
+  TRANSACTION,
+} RecordType;
 
 typedef struct Book {
   char *code;
@@ -15,33 +21,58 @@ typedef struct Book {
   int price;
 } Book;
 
-typedef struct BookFile {
-  Book *bookArray;
-  size_t size;
-  size_t capacity;
-} BookFile;
+typedef struct Transaction {
+  char *transaction_code;
+  int quantity;
+  Book book;
+} Transaction;
 
-// Creates a new book file. For internal use only.
-BookFile *bookfile_new();
+typedef struct FileInterface {
+  Book *bookArray;
+  Transaction *transactionArray;
+  size_t book_array_size;
+  size_t book_array_capacity;
+  size_t transaction_array_size;
+  size_t transaction_array_capacity;
+} FileInterface;
+
+// Create a new book file. For internal use only.
+FileInterface *file_interface_new();
+
+// Load transaction data of file from a text file
+// To be used by file_interface_load only
+int transactionfile_load(FILE *file, FileInterface *fileInterface);
+
+// Load transaction data of file from a text file
+// To be used by file_interface_load only
+int bookfile_load(FILE *file, FileInterface *fileInterface);
 
 // Loads a book file from a text file
-BookFile *bookfile_load(const char *filename);
+int file_interface_load(FileInterface *fileInterface, const char *filename,
+                        RecordType type);
 
-// Creates a new book file. Overwrites the old one if it exists.
-int bookfile_save(BookFile *bookfile, const char *filename);
+// Save book data to a text file
+// To be used by file_interface_save only
+int bookfile_save(FILE *file, FileInterface *file_interface);
 
-// Pushes a new book to the book file. Automatically resizes the array if needed.
-int bookfile_push(BookFile *bookfile, const Book book);
+// Save transaction data to a text file
+// To be used by file_interface_save only
+int transactionfile_save(FILE *file, FileInterface *file_interface);
 
-// Deletes a book from the book file by index.
-// Not implemented yet.
-int bookfile_delete(BookFile *bookfile, size_t index);
+// Creates a new file based on type. Overwrites the old one if it exists.
+int file_interface_save(FileInterface *file_interface, const char *filename,
+                        RecordType type);
 
-// Displays all books in the book file.
-// Not implemented yet.
-int bookfile_display(const BookFile *bookfile);
+// Pushes a new book to the book array. Automatically resizes
+// the array if needed.
+int book_array_push(FileInterface *file_interface, const Book book);
 
-// Frees the memory allocated for the book file.
-int bookfile_free(BookFile *bookfile);
+// Pushes a new transaction to the transaction file. Automatically resizes
+// the array if needed.
+int transaction_array_push(FileInterface *file_interface,
+                           const Transaction transaction);
 
-#endif // FILE_INTERFACE_H
+// Frees the memory allocated for the file interface.
+int file_interface_free(FileInterface *file_interface);
+
+#endif  // FILE_INTERFACE_H
