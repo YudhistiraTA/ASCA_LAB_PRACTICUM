@@ -255,6 +255,28 @@ int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
   return -1;
 }
 
+int transaction_array_delete(FileInterface *fileInterface, const char *trxCode) {
+  if (!fileInterface || !trxCode) return -1;
+
+  for (size_t trxIdx = 0; trxIdx < fileInterface->transaction_array_size; trxIdx++) {
+    if (strcmp(fileInterface->transactionArray[trxIdx].transaction_code, trxCode) == 0) {
+      freeFileInterfaceArrProps(fileInterface, TRANSACTION, trxIdx);
+
+      memmove(
+        &fileInterface->transactionArray[trxIdx],
+        &fileInterface->transactionArray[trxIdx + 1],
+        (fileInterface->transaction_array_size - trxIdx - 1) * sizeof(Transaction)
+      );
+
+      fileInterface->transaction_array_size--;
+
+      return 0;
+    }
+  }
+
+  return -1;
+}
+
 void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx) {
   if (type == ITEM) {
     free(fileInterface->bookArray[idx].code);

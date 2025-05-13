@@ -13,6 +13,15 @@ void delete_book(FileInterface *fileInterface) {
   else printf("Buku tidak ditemukan.\n");
 }
 
+void delete_transaction(FileInterface *fileInterface) {
+  char code[50];
+  printf("Masukkan kode transaksi yang ingin dihapus: ");
+  scanf("%s", code);
+
+  if (transaction_array_delete(fileInterface, code) == 0) printf("Transaksi berhasil dihapus.\n");
+  else printf("Transaksi tidak ditemukan.\n");
+}
+
 int main() {
   /** Data loading start */
   FileInterface *fileInterface = file_interface_new();
