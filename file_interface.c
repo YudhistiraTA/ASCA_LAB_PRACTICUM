@@ -38,7 +38,7 @@ int file_interface_load(FileInterface *fileInterface, const char *filename,
   }
   FILE *file = fopen(filename, "r");
   if (!file) {
-    return -1;
+    return 0; // File not found. fileInterface stay empty
   }
   if (type == ITEM) {
     if (bookfile_load(file, fileInterface) != 0) {
