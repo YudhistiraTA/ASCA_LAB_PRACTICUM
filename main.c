@@ -11,9 +11,6 @@ void delete_book(FileInterface *fileInterface) {
 
   if (book_array_delete(fileInterface, code) == 0) printf("Buku berhasil dihapus.\n");
   else printf("Buku tidak ditemukan.\n");
-
-  if (transaction_array_delete_by_book_code(fileInterface, code) == 0) printf("Transaksi terkait buku berhasil dihapus.\n");
-  else printf("Tidak ada transaksi terkait atau gagal menghapus.\n");
 }
 
 int main() {
