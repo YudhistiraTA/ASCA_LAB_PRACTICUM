@@ -229,5 +229,57 @@ int file_interface_free(FileInterface *file_interface) {
   free(file_interface->bookArray);
   free(file_interface->transactionArray);
   free(file_interface);
+
   return 0;
+}
+
+int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
+  if (!fileInterface || !bookCode) return -1;
+
+  for (size_t bookIdx = 0; bookIdx < fileInterface->book_array_size; bookIdx++) {
+    if (strcmp(fileInterface->bookArray[bookIdx].code, bookCode) == 0) {
+      freeFileInterfaceArrProps(fileInterface, ITEM, bookIdx);
+
+      for (size_t currBookIdx = bookIdx; currBookIdx < fileInterface->book_array_size - 1; currBookIdx++)
+        fileInterface->bookArray[currBookIdx] = fileInterface->bookArray[currBookIdx + 1];
+
+      fileInterface->book_array_size--;
+
+      return 0;
+    }
+  }
+
+  return -1;
+}
+
+int transaction_array_delete_by_book_code(FileInterface *fileInterface, const char *bookCode) {
+  if (!fileInterface || !bookCode) return -1;
+
+  for (size_t trxIdx = 0; trxIdx < fileInterface->transaction_array_size; trxIdx++) {
+    if (strcmp(fileInterface->transactionArray[trxIdx].book.code, bookCode) == 0) {
+      freeFileInterfaceArrProps(fileInterface, TRANSACTION, trxIdx);
+
+      for (size_t currTrxIdx = trxIdx; currTrxIdx < fileInterface->transaction_array_size - 1; currTrxIdx++)
+        fileInterface->transactionArray[currTrxIdx] = fileInterface->transactionArray[currTrxIdx + 1];
+
+      fileInterface->transaction_array_size--;
+    };
+  }
+
+  return 0;
+}
+
+void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx) {
+  if (type == ITEM) {
+    free(fileInterface->bookArray[idx].code);
+    free(fileInterface->bookArray[idx].name);
+    free(fileInterface->bookArray[idx].type);
+  }
+
+  if (type == TRANSACTION) {
+    free(fileInterface->transactionArray[idx].transaction_code);
+    free(fileInterface->transactionArray[idx].book.code);
+    free(fileInterface->transactionArray[idx].book.name);
+    free(fileInterface->transactionArray[idx].book.type);
+  }
 }

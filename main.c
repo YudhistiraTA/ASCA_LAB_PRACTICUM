@@ -4,6 +4,18 @@
 
 #include "file_interface.h"
 
+void delete_book(FileInterface *fileInterface) {
+  char code[50];
+  printf("Masukkan kode buku yang ingin dihapus: ");
+  scanf("%s", code);
+
+  if (book_array_delete(fileInterface, code) == 0) printf("Buku berhasil dihapus.\n");
+  else printf("Buku tidak ditemukan.\n");
+
+  if (transaction_array_delete_by_book_code(fileInterface, code) == 0) printf("Transaksi terkait buku berhasil dihapus.\n");
+  else printf("Tidak ada transaksi terkait atau gagal menghapus.\n");
+}
+
 int main() {
   /** Data loading start */
   FileInterface *fileInterface = file_interface_new();
@@ -23,7 +35,6 @@ int main() {
   while (0) {
   }
   /** Main loop end*/
-
 
   /** Data saving */
   if (file_interface_save(fileInterface, BOOK_FILE, ITEM) != 0) {
