@@ -75,4 +75,10 @@ int transaction_array_push(FileInterface *file_interface,
 // Frees the memory allocated for the file interface.
 int file_interface_free(FileInterface *file_interface);
 
+int book_array_delete(FileInterface *fileInterface, const char *bookCode);
+
+int transaction_array_delete_by_book_code(FileInterface *fileInterface, const char *bookCode);
+
+void freeParticularData(FileInterface *fileInterface, RecordType type, size_t idx);
+
 #endif  // FILE_INTERFACE_H
