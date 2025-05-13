@@ -72,16 +72,20 @@ int transactionfile_load(FILE *file, FileInterface *fileInterface) {
         !book_name_buffer || !book_type_buffer || !book_price_buffer) {
       return -1;
     }
+
     int quantity = atoi(quantity_buffer);
     int price = atoi(book_price_buffer);
+
     Book book;
     book.code = strdup(book_code_buffer);
     book.name = strdup(book_name_buffer);
     book.type = strdup(book_type_buffer);
     book.price = price;
+
     transaction.transaction_code = strdup(code_buffer);
     transaction.quantity = quantity;
     transaction.book = book;
+
     if (transaction_array_push(fileInterface, transaction) != 0) {
       free(transaction.transaction_code);
       free(book.code);
@@ -90,6 +94,7 @@ int transactionfile_load(FILE *file, FileInterface *fileInterface) {
       return -1;
     }
   }
+
   return 0;
 }
 
@@ -208,19 +213,59 @@ int transaction_array_push(FileInterface *file_interface,
 
 int file_interface_free(FileInterface *file_interface) {
   if (!file_interface) return 0;
-  for (size_t i = 0; i < file_interface->book_array_capacity; i++) {
+
+  for (size_t i = 0; i < file_interface->book_array_size; i++) {
     free(file_interface->bookArray[i].code);
     free(file_interface->bookArray[i].name);
     free(file_interface->bookArray[i].type);
   }
-  for (size_t i = 0; i < file_interface->transaction_array_capacity; i++) {
+  for (size_t i = 0; i < file_interface->transaction_array_size; i++) {
     free(file_interface->transactionArray[i].transaction_code);
     free(file_interface->transactionArray[i].book.code);
     free(file_interface->transactionArray[i].book.name);
     free(file_interface->transactionArray[i].book.type);
   }
+
   free(file_interface->bookArray);
   free(file_interface->transactionArray);
   free(file_interface);
+
   return 0;
+}
+
+int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
+  if (!fileInterface || !bookCode) return -1;
+
+  for (size_t bookIdx = 0; bookIdx < fileInterface->book_array_size; bookIdx++) {
+    if (strcmp(fileInterface->bookArray[bookIdx].code, bookCode) == 0) {
+      freeFileInterfaceArrProps(fileInterface, ITEM, bookIdx);
+
+      memmove(
+        &fileInterface->bookArray[bookIdx],
+        &fileInterface->bookArray[bookIdx + 1],
+        (fileInterface->book_array_size - bookIdx - 1) * sizeof(Book)
+      );
+
+      fileInterface->book_array_size--;
+
+      return 0;
+    }
+  }
+
+  return -1;
+}
+
+void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx) {
+  if (type == ITEM) {
+    free(fileInterface->bookArray[idx].code);
+    free(fileInterface->bookArray[idx].name);
+    free(fileInterface->bookArray[idx].type);
+  }
+
+  if (type == TRANSACTION) {
+    free(fileInterface->transactionArray[idx].transaction_code);
+    free(fileInterface->transactionArray[idx].book.code);
+    free(fileInterface->transactionArray[idx].book.name);
+    free(fileInterface->transactionArray[idx].book.type);
+  }
 }
