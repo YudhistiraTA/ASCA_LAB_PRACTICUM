@@ -240,8 +240,11 @@ int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
     if (strcmp(fileInterface->bookArray[bookIdx].code, bookCode) == 0) {
       freeFileInterfaceArrProps(fileInterface, ITEM, bookIdx);
 
-      for (size_t currBookIdx = bookIdx; currBookIdx < fileInterface->book_array_size - 1; currBookIdx++)
-        fileInterface->bookArray[currBookIdx] = fileInterface->bookArray[currBookIdx + 1];
+      memmove(
+        &fileInterface->bookArray[bookIdx],
+        &fileInterface->bookArray[bookIdx + 1],
+        (fileInterface->book_array_size - bookIdx - 1) * sizeof(Book)
+      );
 
       fileInterface->book_array_size--;
 
