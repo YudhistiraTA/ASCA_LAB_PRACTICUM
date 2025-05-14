@@ -269,3 +269,42 @@ void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, si
     free(fileInterface->transactionArray[idx].book.type);
   }
 }
+
+void view_books(FileInterface *fileInterface) {
+  size_t out_size = fileInterface->book_array_size;
+  Book *books = fileInterface->bookArray;
+
+  if (books == NULL) {
+    printf("No books available.\n");
+    return;
+  }
+
+  for (size_t i = 0; i < out_size; i++) {
+    printf("Book Index: %zu, Code: %s, Name: %s, Type: %s, Price: %d\n", 
+      i,
+      books[i].code,
+      books[i].name, 
+      books[i].type, 
+      books[i].price);
+  }
+}
+
+void view_transactions(FileInterface *fileInterface) {
+  size_t out_size = fileInterface->transaction_array_size;
+  Transaction *transactions = fileInterface->transactionArray;
+  if (transactions == NULL) {
+    printf("No transactions available.\n");
+    return;
+  }
+
+  for (size_t i = 0; i < out_size; i++) {
+    printf("Transaction Index: %zu, Code: %s, Quantity: %d, Book Code: %s, Book Name: %s, Book Type: %s, Book Price: %d\n",
+      i,
+      transactions[i].transaction_code,
+      transactions[i].quantity,
+      transactions[i].book.code,
+      transactions[i].book.name,
+      transactions[i].book.type,
+      transactions[i].book.price);
+  }
+}

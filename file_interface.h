@@ -79,4 +79,8 @@ int book_array_delete(FileInterface *fileInterface, const char *bookCode);
 
 void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx);
 
+void view_books(FileInterface *fileInterface);
+
+void view_transactions(FileInterface *fileInterface);
+
 #endif  // FILE_INTERFACE_H

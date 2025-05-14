@@ -33,6 +33,9 @@ int main() {
   }
   /** Main loop end*/
 
+  view_books(fileInterface);
+  view_transactions(fileInterface);
+
   /** Data saving */
   if (file_interface_save(fileInterface, BOOK_FILE, ITEM) != 0) {
     printf("Failed to save book file.\n");
