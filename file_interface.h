@@ -81,10 +81,6 @@ void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, si
 
 void view_books(FileInterface *fileInterface);
 
-Book* get_books(FileInterface *fileInterface, size_t *out_size);
-
 void view_transactions(FileInterface *fileInterface);
-
-Transaction* get_transactions(FileInterface *fileInterface, size_t *out_size);
 
 #endif  // FILE_INTERFACE_H

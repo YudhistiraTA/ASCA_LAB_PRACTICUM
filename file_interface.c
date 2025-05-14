@@ -270,19 +270,10 @@ void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, si
   }
 }
 
-Book* get_books(FileInterface *fileInterface, size_t *out_size) {
-  if (!fileInterface || fileInterface->book_array_size == 0) {
-      *out_size = 0;
-      return NULL;
-  }
-
-  *out_size = fileInterface->book_array_size;
-  return fileInterface->bookArray; // Return internal array pointer
-}
-
 void view_books(FileInterface *fileInterface) {
-  size_t out_size = 0;
-  Book *books = get_books(fileInterface, &out_size);
+  size_t out_size = fileInterface->book_array_size;
+  Book *books = fileInterface->bookArray;
+
   if (books == NULL) {
     printf("No books available.\n");
     return;
@@ -298,19 +289,9 @@ void view_books(FileInterface *fileInterface) {
   }
 }
 
-Transaction* get_transactions(FileInterface *fileInterface, size_t *out_size) {
-  if (!fileInterface || fileInterface->transaction_array_size == 0) {
-      *out_size = 0;
-      return NULL;
-  }
-
-  *out_size = fileInterface->transaction_array_size;
-  return fileInterface->transactionArray; // Return internal array pointer
-}
-
 void view_transactions(FileInterface *fileInterface) {
-  size_t out_size = 0;
-  Transaction *transactions = get_transactions(fileInterface, &out_size);
+  size_t out_size = fileInterface->transaction_array_size;
+  Transaction *transactions = fileInterface->transactionArray;
   if (transactions == NULL) {
     printf("No transactions available.\n");
     return;
