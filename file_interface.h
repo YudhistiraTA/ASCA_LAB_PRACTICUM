@@ -9,11 +9,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// Item or Transaction record
 typedef enum RecordType {
   ITEM,
   TRANSACTION,
 } RecordType;
 
+// Book structure
+// Contains code, name, type and price
 typedef struct Book {
   char *code;
   char *name;
@@ -21,12 +24,16 @@ typedef struct Book {
   int price;
 } Book;
 
+// Transaction structure
+// Contains transaction code, quantity and embedded copy of book structure
 typedef struct Transaction {
   char *transaction_code;
   int quantity;
   Book book;
 } Transaction;
 
+// FileInterface structure
+// Contains arrays of books and transactions, their sizes and capacities
 typedef struct FileInterface {
   Book *bookArray;
   Transaction *transactionArray;
@@ -47,7 +54,7 @@ int transactionfile_load(FILE *file, FileInterface *fileInterface);
 // To be used by file_interface_load only
 int bookfile_load(FILE *file, FileInterface *fileInterface);
 
-// Loads a book file from a text file
+// Loads a book file from a text file and store it in the appropriate array type (transaction or book).
 int file_interface_load(FileInterface *fileInterface, const char *filename,
                         RecordType type);
 
@@ -75,14 +82,19 @@ int transaction_array_push(FileInterface *file_interface,
 // Frees the memory allocated for the file interface.
 int file_interface_free(FileInterface *file_interface);
 
+// Deletes a book from the book array given an index. Frees the memory allocated for the book.
 int book_array_delete(FileInterface *fileInterface, size_t index);
 
+// Deletes a transaction from the transaction array given an index. Frees the memory allocated for the transaction.
 int transaction_array_delete(FileInterface *fileInterface, size_t index);
 
+// Frees the memory allocated for the book or transaction at the given index.
 void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx);
 
+// Displays the books in the book array
 void view_books(FileInterface *fileInterface);
 
+// Displays the transactions in the transaction array
 void view_transactions(FileInterface *fileInterface);
 
 #endif  // FILE_INTERFACE_H
