@@ -233,49 +233,32 @@ int file_interface_free(FileInterface *file_interface) {
   return 0;
 }
 
-int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
-  if (!fileInterface || !bookCode) return -1;
+int book_array_delete(FileInterface *fileInterface, size_t index) {
+  if (!fileInterface || index >= fileInterface->book_array_size) return -1;
 
-  for (size_t bookIdx = 0; bookIdx < fileInterface->book_array_size;
-       bookIdx++) {
-    if (strcmp(fileInterface->bookArray[bookIdx].code, bookCode) == 0) {
-      freeFileInterfaceArrProps(fileInterface, ITEM, bookIdx);
+  freeFileInterfaceArrProps(fileInterface, ITEM, index);
+  memmove(
+    &fileInterface->bookArray[index],
+    &fileInterface->bookArray[index + 1],
+    (fileInterface->book_array_size - index - 1) * sizeof(Book)
+  );
+  fileInterface->book_array_size--;
 
-      memmove(&fileInterface->bookArray[bookIdx],
-              &fileInterface->bookArray[bookIdx + 1],
-              (fileInterface->book_array_size - bookIdx - 1) * sizeof(Book));
-
-      fileInterface->book_array_size--;
-
-      return 0;
-    }
-  }
-
-  return -1;
+  return 0;
 }
 
-int transaction_array_delete(FileInterface *fileInterface,
-                             const char *trxCode) {
-  if (!fileInterface || !trxCode) return -1;
+int transaction_array_delete(FileInterface *fileInterface, size_t index) {
+  if (!fileInterface || index >= fileInterface->transaction_array_size) return -1;
 
-  for (size_t trxIdx = 0; trxIdx < fileInterface->transaction_array_size;
-       trxIdx++) {
-    if (strcmp(fileInterface->transactionArray[trxIdx].transaction_code,
-               trxCode) == 0) {
-      freeFileInterfaceArrProps(fileInterface, TRANSACTION, trxIdx);
+  freeFileInterfaceArrProps(fileInterface, TRANSACTION, index);
+  memmove(
+    &fileInterface->transactionArray[index],
+    &fileInterface->transactionArray[index + 1],
+    (fileInterface->transaction_array_size - index - 1) * sizeof(Transaction)
+  );
+  fileInterface->transaction_array_size--;
 
-      memmove(&fileInterface->transactionArray[trxIdx],
-              &fileInterface->transactionArray[trxIdx + 1],
-              (fileInterface->transaction_array_size - trxIdx - 1) *
-                  sizeof(Transaction));
-
-      fileInterface->transaction_array_size--;
-
-      return 0;
-    }
-  }
-
-  return -1;
+  return 0;
 }
 
 void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type,
