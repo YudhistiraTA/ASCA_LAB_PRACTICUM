@@ -38,7 +38,7 @@ int file_interface_load(FileInterface *fileInterface, const char *filename,
   }
   FILE *file = fopen(filename, "r");
   if (!file) {
-    return 0; // File not found. fileInterface stay empty
+    return 0;  // File not found. fileInterface stay empty
   }
   if (type == ITEM) {
     if (bookfile_load(file, fileInterface) != 0) {
@@ -157,7 +157,7 @@ int bookfile_save(FILE *file, FileInterface *file_interface) {
     if (fprintf(file, "%s,%s,%s,%d\n", book.code, book.name, book.type,
                 book.price) < 0) {
       return -1;
-    };
+    }
   }
   return 0;
 }
@@ -171,7 +171,7 @@ int transactionfile_save(FILE *file, FileInterface *file_interface) {
                 transaction.book.name, transaction.book.type,
                 transaction.book.price) < 0) {
       return -1;
-    };
+    }
   }
   return 0;
 }
@@ -236,15 +236,14 @@ int file_interface_free(FileInterface *file_interface) {
 int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
   if (!fileInterface || !bookCode) return -1;
 
-  for (size_t bookIdx = 0; bookIdx < fileInterface->book_array_size; bookIdx++) {
+  for (size_t bookIdx = 0; bookIdx < fileInterface->book_array_size;
+       bookIdx++) {
     if (strcmp(fileInterface->bookArray[bookIdx].code, bookCode) == 0) {
       freeFileInterfaceArrProps(fileInterface, ITEM, bookIdx);
 
-      memmove(
-        &fileInterface->bookArray[bookIdx],
-        &fileInterface->bookArray[bookIdx + 1],
-        (fileInterface->book_array_size - bookIdx - 1) * sizeof(Book)
-      );
+      memmove(&fileInterface->bookArray[bookIdx],
+              &fileInterface->bookArray[bookIdx + 1],
+              (fileInterface->book_array_size - bookIdx - 1) * sizeof(Book));
 
       fileInterface->book_array_size--;
 
@@ -255,18 +254,20 @@ int book_array_delete(FileInterface *fileInterface, const char *bookCode) {
   return -1;
 }
 
-int transaction_array_delete(FileInterface *fileInterface, const char *trxCode) {
+int transaction_array_delete(FileInterface *fileInterface,
+                             const char *trxCode) {
   if (!fileInterface || !trxCode) return -1;
 
-  for (size_t trxIdx = 0; trxIdx < fileInterface->transaction_array_size; trxIdx++) {
-    if (strcmp(fileInterface->transactionArray[trxIdx].transaction_code, trxCode) == 0) {
+  for (size_t trxIdx = 0; trxIdx < fileInterface->transaction_array_size;
+       trxIdx++) {
+    if (strcmp(fileInterface->transactionArray[trxIdx].transaction_code,
+               trxCode) == 0) {
       freeFileInterfaceArrProps(fileInterface, TRANSACTION, trxIdx);
 
-      memmove(
-        &fileInterface->transactionArray[trxIdx],
-        &fileInterface->transactionArray[trxIdx + 1],
-        (fileInterface->transaction_array_size - trxIdx - 1) * sizeof(Transaction)
-      );
+      memmove(&fileInterface->transactionArray[trxIdx],
+              &fileInterface->transactionArray[trxIdx + 1],
+              (fileInterface->transaction_array_size - trxIdx - 1) *
+                  sizeof(Transaction));
 
       fileInterface->transaction_array_size--;
 
@@ -277,7 +278,8 @@ int transaction_array_delete(FileInterface *fileInterface, const char *trxCode) 
   return -1;
 }
 
-void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx) {
+void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type,
+                               size_t idx) {
   if (type == ITEM) {
     free(fileInterface->bookArray[idx].code);
     free(fileInterface->bookArray[idx].name);
@@ -297,36 +299,34 @@ void view_books(FileInterface *fileInterface) {
   Book *books = fileInterface->bookArray;
 
   if (books == NULL) {
-    printf("No books available.\n");
+    printf("\nNo books available.\n\n");
     return;
   }
 
+  printf("\n=== Daftar Buku ===\n");
   for (size_t i = 0; i < out_size; i++) {
-    printf("Book Index: %zu, Code: %s, Name: %s, Type: %s, Price: %d\n", 
-      i,
-      books[i].code,
-      books[i].name, 
-      books[i].type, 
-      books[i].price);
+    printf("Book Index: %zu, Code: %s, Name: %s, Type: %s, Price: %d\n", i,
+           books[i].code, books[i].name, books[i].type, books[i].price);
   }
+  printf("-------------------\n\n");
 }
 
 void view_transactions(FileInterface *fileInterface) {
   size_t out_size = fileInterface->transaction_array_size;
   Transaction *transactions = fileInterface->transactionArray;
   if (transactions == NULL) {
-    printf("No transactions available.\n");
+    printf("\nNo transactions available.\n\n");
     return;
   }
 
+  printf("\n=== Daftar Transaksi ===\n");
   for (size_t i = 0; i < out_size; i++) {
-    printf("Transaction Index: %zu, Code: %s, Quantity: %d, Book Code: %s, Book Name: %s, Book Type: %s, Book Price: %d\n",
-      i,
-      transactions[i].transaction_code,
-      transactions[i].quantity,
-      transactions[i].book.code,
-      transactions[i].book.name,
-      transactions[i].book.type,
-      transactions[i].book.price);
+    printf(
+        "Transaction Index: %zu, Code: %s, Quantity: %d, Book Code: %s, Book "
+        "Name: %s, Book Type: %s, Book Price: %d\n",
+        i, transactions[i].transaction_code, transactions[i].quantity,
+        transactions[i].book.code, transactions[i].book.name,
+        transactions[i].book.type, transactions[i].book.price);
   }
+  printf("------------------------\n\n");
 }

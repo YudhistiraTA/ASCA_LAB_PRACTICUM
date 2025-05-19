@@ -13,14 +13,14 @@ void input_book(FileInterface *interface) {
   char type_buffer[100];
   int price;
 
-  printf("=== Input Data Buku ===\n");
-  printf("Masukkan Kode Buku: ");
+  printf("\n=== Input Data Buku ===\n");
+  printf("Masukkan kode buku : ");
   scanf(" %[^\n]", code_buffer);
-  printf("Masukkan Nama Buku: ");
+  printf("Masukkan nama buku : ");
   scanf(" %[^\n]", name_buffer);
-  printf("Masukkan Jenis Buku: ");
+  printf("Masukkan jenis buku : ");
   scanf(" %[^\n]", type_buffer);
-  printf("Masukkan Harga Buku: ");
+  printf("Masukkan harga buku : ");
   scanf("%d", &price);
 
   Book book;
@@ -30,57 +30,66 @@ void input_book(FileInterface *interface) {
   book.price = price;
 
   book_array_push(interface, book);
-  printf("Data buku berhasil ditambahkan!\n\n");
+  printf("\nData buku berhasil ditambahkan!\n\n");
 }
 
 void input_transaction(FileInterface *interface) {
   char transaction_code[50];
   int index, quantity;
 
-  printf("=== Input Transaksi ===\n");
+  printf("\n=== Input Transaksi ===\n");
   view_books(interface);
 
-  printf("Masukkan kode transaksi: ");
+  printf("Masukkan kode transaksi : ");
   scanf(" %[^\n]", transaction_code);
-  printf("Pilih index buku yang ingin dijual (mulai dari 0): ");
+  printf("Pilih index buku yang ingin dijual (mulai dari 0) : ");
   scanf("%d", &index);
-  printf("Masukkan jumlah buku yang dijual: ");
+  printf("Masukkan jumlah buku yang dijual : ");
   scanf("%d", &quantity);
 
   if (index < 0 || index >= interface->book_array_size) {
-    printf("Index tidak valid!\n");
+    printf("\nIndex tidak valid!\n\n");
     return;
   }
 
   Transaction transaction;
   transaction.transaction_code = strdup(transaction_code);
   transaction.quantity = quantity;
-  transaction.book = interface->bookArray[index];
+  transaction.book.code = strdup(interface->bookArray[index].code);
+  transaction.book.name = strdup(interface->bookArray[index].name);
+  transaction.book.type = strdup(interface->bookArray[index].type);
+  transaction.book.price = interface->bookArray[index].price;
 
   transaction_array_push(interface, transaction);
-  printf("Transaksi berhasil ditambahkan!\n\n");
+  printf("\nTransaksi berhasil ditambahkan!\n\n");
 }
 
 void delete_book(FileInterface *fileInterface) {
   char code[50];
-  printf("Masukkan kode buku yang ingin dihapus: ");
+
+  view_books(fileInterface);
+
+  printf("Masukkan kode buku yang ingin dihapus : ");
   scanf("%s", code);
 
   if (book_array_delete(fileInterface, code) == 0)
-    printf("Buku berhasil dihapus.\n");
+    printf("\nBuku berhasil dihapus.\n\n");
   else
-    printf("Buku tidak ditemukan.\n");
+    printf("\nBuku tidak ditemukan.\n\n");
 }
 
 void delete_transaction(FileInterface *fileInterface) {
   char code[50];
-  printf("Masukkan kode transaksi yang ingin dihapus: ");
+
+  view_transactions(fileInterface);
+
+  printf("Masukkan kode transaksi yang ingin dihapus : ");
   scanf("%s", code);
 
   if (transaction_array_delete(fileInterface, code) == 0)
-    printf("Transaksi berhasil dihapus.\n");
+    printf("\nTransaksi berhasil dihapus.\n\n");
   else
-    printf("Transaksi tidak ditemukan.\n");
+    printf("\nTransaksi tidak ditemukan.\n\n");
 }
 
 int main() {
@@ -97,16 +106,19 @@ int main() {
   }
 
   int choice;
+
+  system("cls");
+
   while (1) {
-    printf("\n=== Menu ===\n");
+    printf("=== Menu ===\n");
     printf("1. Input Buku\n");
     printf("2. Input Transaksi\n");
     printf("3. View Buku\n");
     printf("4. View Transaksi\n");
     printf("5. Delete Buku\n");
     printf("6. Delete Transaksi\n");
-    printf("7. Exit\n");
-    printf("Pilih menu: ");
+    printf("7. Exit\n\n");
+    printf("Pilih menu : ");
     scanf("%d", &choice);
 
     switch (choice) {
@@ -129,7 +141,7 @@ int main() {
         delete_transaction(fileInterface);
         break;
       case 7:
-        printf("Menyimpan data...\n");
+        printf("\nMenyimpan data...\n");
         if (file_interface_save(fileInterface, BOOK_FILE, ITEM) != 0) {
           printf("Failed to save book file.\n");
         }
@@ -138,10 +150,10 @@ int main() {
           printf("Failed to save transaction file.\n");
         }
         file_interface_free(fileInterface);
-        printf("Program selesai.\n");
+        printf("\nProgram selesai.\n\n");
         return 0;
       default:
-        printf("Pilihan tidak valid. Coba lagi.\n");
+        printf("Pilihan tidak valid. Coba lagi.\n\n");
     }
   }
 }
