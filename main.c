@@ -62,25 +62,31 @@ void input_transaction(FileInterface *interface) {
 }
 
 void delete_book(FileInterface *fileInterface) {
-  char code[50];
-  printf("Masukkan kode buku yang ingin dihapus: ");
-  scanf("%s", code);
+  int index;
 
-  if (book_array_delete(fileInterface, code) == 0)
+  view_books(fileInterface);
+
+  printf("Masukkan index buku yang ingin dihapus: ");
+  scanf("%d", &index);
+
+  if (book_array_delete(fileInterface, index) == 0)
     printf("Buku berhasil dihapus.\n");
   else
-    printf("Buku tidak ditemukan.\n");
+    printf("Index tidak valid atau buku tidak ditemukan.\n");
 }
 
 void delete_transaction(FileInterface *fileInterface) {
-  char code[50];
-  printf("Masukkan kode transaksi yang ingin dihapus: ");
-  scanf("%s", code);
+  int index;
 
-  if (transaction_array_delete(fileInterface, code) == 0)
+  view_transactions(fileInterface);
+
+  printf("Masukkan index transaksi yang ingin dihapus: ");
+  scanf("%d", &index);
+
+  if (transaction_array_delete(fileInterface, index) == 0)
     printf("Transaksi berhasil dihapus.\n");
   else
-    printf("Transaksi tidak ditemukan.\n");
+    printf("Index tidak valid atau transaksi tidak ditemukan.\n");
 }
 
 int main() {

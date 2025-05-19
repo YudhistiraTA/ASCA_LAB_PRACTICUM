@@ -75,9 +75,9 @@ int transaction_array_push(FileInterface *file_interface,
 // Frees the memory allocated for the file interface.
 int file_interface_free(FileInterface *file_interface);
 
-int book_array_delete(FileInterface *fileInterface, const char *bookCode);
+int book_array_delete(FileInterface *fileInterface, size_t index);
 
-int transaction_array_delete(FileInterface *fileInterface, const char *trxCode);
+int transaction_array_delete(FileInterface *fileInterface, size_t index);
 
 void freeFileInterfaceArrProps(FileInterface *fileInterface, RecordType type, size_t idx);
 
